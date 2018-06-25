@@ -2169,8 +2169,7 @@
 
 ;;LimbTorqueControllerService
 (def-set-get-param-method 'hrpsys_ros_bridge::OpenHRP_LimbTorqueControllerService_limbtorqueParam
-  :raw-set-limbtorque-controller-param :raw-get-limbtorque-controller-param
-  :set-limbtorque-controller-param :get-limbtorque-controller-param :get-limbtorque-controller-param-arguments
+  :raw-set-limbtorque-controller-param :raw-get-limbtorque-controller-param :get-limbtorque-controller-param-arguments
   :limbtorquecontrollerservice_setlimbtorquecontrollerparam :limbtorquecontrollerservice_getlimbtorquecontrollerparam
   :optional-args (list :name 'name))
 (defmethod rtm-ros-robot-interface

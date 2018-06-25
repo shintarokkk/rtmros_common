@@ -2167,6 +2167,73 @@
     ))
   )
 
+;;LimbTorqueControllerService
+(def-set-get-param-method 'hrpsys_ros_bridge::OpenHRP_LimbTorqueControllerService_limbtorqueParam
+  :raw-set-limbtorque-controller-param :raw-get-limbtorque-controller-param
+  :set-limbtorque-controller-param :get-limbtorque-controller-param :get-limbtorque-controller-param-arguments
+  :limbtorquecontrollerservice_setlimbtorquecontrollerparam :limbtorquecontrollerservice_getlimbtorquecontrollerparam
+  :optional-args (list :name 'name))
+(defmethod rtm-ros-robot-interface
+  (:start-limbtorque-controller
+   (limb &rest args)
+   "Start limb torque controller mode.
+    limb should be limb symbol name such as :rarm, :larm, :rleg, :lleg, :arms, or :legs."
+   (if args
+       (progn
+         (send* self :set-limbtorque-controller-param limb args)
+         (send self :raw-start-limbtorque-controller limb))
+     (send self :raw-start-limbtorque-controller limb)))
+  (:raw-start-limbtorque-contorller
+   (limb)
+   (send self :force-sensor-method
+         limb
+         #'(lambda (name &rest _args)
+             (send self :limbtorquecontrollerservice_startimpedancecontroller :name (string-downcase name)))
+         :raw-start-limbtorque-controller))
+  (:stop-limbtorque-controller
+   (limb)
+   "Stop limb torque controller mode.
+    limb should be limb symbol name such as :rarm, :larm, :rleg, :lleg, :arms, or :legs."
+   (send self :force-sensor-method
+         limb
+         #'(lambda (name &rest _args)
+             (send self :limbtorquecontrollerservice_stopimpedancecontroller :name (string-downcase name)))
+         :stop-limbtorque-controller))
+  (:set-limbtorque-controller-param
+   (limb &rest args)
+   "Set limb torque controller parameter like (send *ri* :set-impedance-controller-param :rarm :pgain 400).
+    limb should be limb symbol name such as :rarm, :larm, :rleg, :lleg, :arms, or :legs.
+    For arguments, please see (send *ri* :get-limbtorque-controller-param-arguments)."
+   (send* self :force-sensor-method
+          limb
+          #'(lambda (name &rest _args)
+              (send* self :raw-set-limbtorque-controller-param (string-downcase name) args))
+          :set-limbtorque-controller-param
+          args))
+  (:get-limbtorque-controller-param
+   (limb)
+   "Get limb torque controller parameter.
+    limb should be limb symbol name such as :rarm, :larm, :rleg, :lleg, :arms, or :legs."
+   (send self :force-sensor-method
+         limb
+         #'(lambda (name &rest _args)
+             (send self :raw-get-limbtorque-controller-param (string-downcase name)))
+         :get-limbtorque-controller-param))
+  (:get-limbtorque-controller-controller-mode
+   (name)
+   "Get LimbTorqueController ControllerMode as Euslisp symbol."
+   (let ((param (send self :get-limbtorque-controller-param name)))
+     (labels ((get-euslisp-prm
+               (prm)
+               (send self :get-idl-enum-values (send prm :controller_mode)
+                     "HRPSYS_ROS_BRIDGE::OPENHRP_LIMBTORQUECONTROLLERSERVICE_CONTROLLERMODE")))
+       (if (atom param)
+           (get-euslisp-prm param)
+         (mapcar #'get-euslisp-prm param))
+       )))
+  )
+
+
 (defmethod rtm-ros-robot-interface
   (:print-rtc-param-all
    ()
@@ -2203,6 +2270,10 @@
        (dolist (j (send robot :joint-list))
          (format t ";; :get-torque-controller-param ~A~%" (read-from-string (format nil ":~A" (send j :name))))
          (print-ros-msg (send self :get-torque-controller-param (read-from-string (format nil ":~A" (send j :name)))))))
+     (when (find "/LimbTorqueControllerServiceROSBridge" rosbridge-nodes :test #'string=)
+       (dolist (limb (sort '(:rleg :lleg :rarm :larm) #'< #'(lambda (x) (position (car (send robot x :force-sensors)) (send robot :force-sensors)))))
+         (format t ";; :get-limbtorque-controller-param ~A~%" limb)
+         (print-ros-msg (send self :get-limbtorque-controller-param limb))))
      t))
   )
 

@@ -16,7 +16,7 @@
   <arg name="USE_ROBOT_POSE_EKF" default="true" />
   <!-- Set these values false when using HIRO -->
   <arg name="USE_COMMON" default="true" />
-  <arg name="USE_ROBOTHARDWARE" default="false" />
+  <arg name="USE_ROBOTHARDWARE" default="true" />
   <arg name="USE_WALKING" default="false" />
   <arg name="USE_COLLISIONCHECK" default="true" />
   <arg name="USE_IMPEDANCECONTROLLER" default="false" />
@@ -197,6 +197,12 @@
     <rtconnect from="RemoveForceSensorLinkOffsetServiceROSBridge.rtc:RemoveForceSensorLinkOffsetService" to="rmfo.rtc:RemoveForceSensorLinkOffsetService"  subscription_type="new"/>
     <rtactivate component="RemoveForceSensorLinkOffsetServiceROSBridge.rtc" />
   </group>
+
+  <node pkg="hrpsys_ros_bridge" name="LimbTorqueControllerServiceROSBridge" type="LimbTorqueControllerServiceROSBridgeComp"
+        output="screen" args ="$(arg openrtm_args)" />
+
+  <rtconnect from="LimbTorqueControllerServiceROSBridge.rtc:LimbTorqueControllerService" to="ltc.rtc:LimbTorqueControllerService"  subscription_type="new"/>
+  <rtactivate component="LimbTorqueControllerServiceROSBridge.rtc" />
 
   <!-- USE_GRASPCONTROLLER
        GraspController

@@ -29,6 +29,7 @@
   <arg name="USE_EMERGENCYSTOPPER" default="false" />
   <arg name="USE_REFERENCEFORCEUPDATER" default="false" />
   <arg name="USE_OBJECTCONTACTTURNAROUNDDETECTOR" default="false" />
+  <arg name="USE_LIMBTORQUECONTROLLER" default="true" />
   <arg name="USE_HRPSYS_PROFILE" default="true" />
   <arg name="USE_VELOCITY_OUTPUT" default="false" />
   <arg name="PUBLISH_SENSOR_TF" default="true" />
@@ -198,12 +199,6 @@
     <rtactivate component="RemoveForceSensorLinkOffsetServiceROSBridge.rtc" />
   </group>
 
-  <node pkg="hrpsys_ros_bridge" name="LimbTorqueControllerServiceROSBridge" type="LimbTorqueControllerServiceROSBridgeComp"
-        output="screen" args ="$(arg openrtm_args)" />
-
-  <rtconnect from="LimbTorqueControllerServiceROSBridge.rtc:LimbTorqueControllerService" to="ltc.rtc:LimbTorqueControllerService"  subscription_type="new"/>
-  <rtactivate component="LimbTorqueControllerServiceROSBridge.rtc" />
-
   <!-- USE_GRASPCONTROLLER
        GraspController
   -->
@@ -265,6 +260,14 @@
     <rtconnect from="HardEmergencyStopperServiceROSBridge.rtc:EmergencyStopperService" to="hes.rtc:EmergencyStopperService"  subscription_type="new"/>
     <rtactivate component="EmergencyStopperServiceROSBridge.rtc" />
     <rtactivate component="HardEmergencyStopperServiceROSBridge.rtc" />
+  </group>
+
+  <group if="$(arg USE_LIMBTORQUECONTROLLER)" >
+    <node pkg="hrpsys_ros_bridge" name="LimbTorqueControllerServiceROSBridge" type="LimbTorqueControllerServiceROSBridgeComp"
+          output="screen" args ="$(arg openrtm_args)" />
+
+    <rtconnect from="LimbTorqueControllerServiceROSBridge.rtc:LimbTorqueControllerService" to="ltc.rtc:LimbTorqueControllerService"  subscription_type="new"/>
+    <rtactivate component="LimbTorqueControllerServiceROSBridge.rtc" />
   </group>
 
   <group if="$(arg USE_REFERENCEFORCEUPDATER)" >

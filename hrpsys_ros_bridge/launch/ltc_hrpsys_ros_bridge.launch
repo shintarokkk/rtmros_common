@@ -93,7 +93,7 @@
   <env name="push_policy" value="$(arg push_policy)" />
   <env name="push_rate" value="$(arg push_rate)" />
   <env name="buffer_length" value="$(arg buffer_length)" />
-  <node name="rtmlaunch_hrpsys_ros_bridge" pkg="openrtm_tools" type="rtmlaunch.py" args="$(find hrpsys_ros_bridge)/launch/ltc_hrpsys_ros_bridge.launch USE_COMMON=$(arg USE_COMMON) USE_WALKING=$(arg USE_WALKING) USE_COLLISIONCHECK=$(arg USE_COLLISIONCHECK) USE_IMPEDANCECONTROLLER=$(arg USE_IMPEDANCECONTROLLER) USE_SOFTERRORLIMIT=$(arg USE_SOFTERRORLIMIT) USE_IMAGESENSOR=$(arg USE_IMAGESENSOR) USE_ROBOTHARDWARE=$(arg USE_ROBOTHARDWARE) USE_GRASPCONTROLLER=$(arg USE_GRASPCONTROLLER) USE_SERVOCONTROLLER=$(arg USE_SERVOCONTROLLER) USE_TORQUECONTROLLER=$(arg USE_TORQUECONTROLLER) USE_TORQUEFILTER=$(arg USE_TORQUEFILTER) USE_EMERGENCYSTOPPER=$(arg USE_EMERGENCYSTOPPER) USE_REFERENCEFORCEUPDATER=$(arg USE_REFERENCEFORCEUPDATER) USE_OBJECTCONTACTTURNAROUNDDETECTOR=$(arg USE_OBJECTCONTACTTURNAROUNDDETECTOR) USE_VELOCITY_OUTPUT=$(arg USE_VELOCITY_OUTPUT)" output="$(arg OUTPUT)"/>
+  <node name="rtmlaunch_hrpsys_ros_bridge" pkg="openrtm_tools" type="rtmlaunch.py" args="$(find hrpsys_ros_bridge)/launch/ltc_hrpsys_ros_bridge.launch USE_COMMON=$(arg USE_COMMON) USE_WALKING=$(arg USE_WALKING) USE_COLLISIONCHECK=$(arg USE_COLLISIONCHECK) USE_IMPEDANCECONTROLLER=$(arg USE_IMPEDANCECONTROLLER) USE_SOFTERRORLIMIT=$(arg USE_SOFTERRORLIMIT) USE_IMAGESENSOR=$(arg USE_IMAGESENSOR) USE_ROBOTHARDWARE=$(arg USE_ROBOTHARDWARE) USE_GRASPCONTROLLER=$(arg USE_GRASPCONTROLLER) USE_SERVOCONTROLLER=$(arg USE_SERVOCONTROLLER) USE_TORQUECONTROLLER=$(arg USE_TORQUECONTROLLER) USE_TORQUEFILTER=$(arg USE_TORQUEFILTER) USE_EMERGENCYSTOPPER=$(arg USE_EMERGENCYSTOPPER) USE_REFERENCEFORCEUPDATER=$(arg USE_REFERENCEFORCEUPDATER) USE_OBJECTCONTACTTURNAROUNDDETECTOR=$(arg USE_OBJECTCONTACTTURNAROUNDDETECTOR) USE_VELOCITY_OUTPUT=$(arg USE_VELOCITY_OUTPUT) USE_LIMBTORQUECONTROLLER=$(arg USE_LIMBTORQUECONTROLLER)" output="$(arg OUTPUT)"/>
 
 
   <!-- All Robots -->
@@ -267,9 +267,8 @@
           output="screen" args ="$(arg openrtm_args)" />
 
     <rtconnect from="LimbTorqueControllerServiceROSBridge.rtc:LimbTorqueControllerService" to="ltc.rtc:LimbTorqueControllerService"  subscription_type="new"/>
+    <rtactivate component="LimbTorqueControllerServiceROSBridge.rtc" />
   </group>
-
-  <rtactivate component="LimbTorqueControllerServiceROSBridge.rtc" />
 
   <group if="$(arg USE_REFERENCEFORCEUPDATER)" >
     <node pkg="hrpsys_ros_bridge" name="ReferenceForceUpdaterServiceROSBridge" type="ReferenceForceUpdaterServiceROSBridgeComp"
